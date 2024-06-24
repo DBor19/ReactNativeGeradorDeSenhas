@@ -43,7 +43,7 @@ export function Insert() {
 
     return (
         <View style={{ backgroundColor: 'white', marginTop: 70, width: "80%" }}>
-            <Button title="Salvar Senha" onPress={() => insert()} />
+            <Button title="Gerar Senha" onPress={() => insert()} />
         </View>
     );
 }
