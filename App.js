@@ -2,6 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { Insert } from './banco/Insert';
 import { Remove } from './banco/Remove';
 import { AllContacts } from './banco/AllContacts';
+import { Update } from './banco/Update';
 
 export default function App() {
 
@@ -9,6 +10,7 @@ export default function App() {
     <View style={styles.container}>
       <Insert/>
       <Remove/>
+      <Update/>
       <AllContacts/>
     </View>
   );
