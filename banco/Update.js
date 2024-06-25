@@ -9,7 +9,7 @@ export function Update() {
 
     const update = async () => {
         try {
-            const db = await create(); // Obtém a instância do banco de dados
+            const db = await create();
             const result = await db.executeSql('UPDATE senhas SET senha = ? WHERE id = ?;', [senha, id]);
 
             if (result[0].rowsAffected > 0) {
