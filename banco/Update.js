@@ -1,67 +1,63 @@
-import { useState } from 'react';
-import { Alert, Button, StyleSheet, TextInput, View } from 'react-native';
+import * as SQLite from 'expo-sqlite';
 import { create } from './Create.js';
+import React, { useState } from 'react';
+import { Alert, View, TextInput, Button, StyleSheet } from 'react-native';
 
 export function Update() {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+    const [id, setId] = useState('');
+    const [senha, setSenha] = useState('');
 
     const update = async () => {
         try {
-            let db = await create();
-            let result = await db.runAsync(`UPDATE senhas SET senha = ? WHERE senha = ?;`, [password, login]);
-            if (result.changes > 0) {
+            const db = await create(); // Obtém a instância do banco de dados
+            const result = await db.executeSql('UPDATE senhas SET senha = ? WHERE id = ?;', [senha, id]);
+
+            if (result[0].rowsAffected > 0) {
                 Alert.alert(
-                    'Sucesso!',
-                    'Credenciais salvas',
-                    [
-                        { text: 'Ok' },
-                    ],
+                    'Sucesso',
+                    `Senha alterada com sucesso e salva no banco de dados: ${senha}`,
+                    [{ text: 'Ok' }],
                     { cancelable: false }
                 );
             } else {
-                Alert.alert('Erro', 'Erro ao atualizar senha', [{ text: 'Ok' }], { cancelable: false });
+                Alert.alert(
+                    'Erro',
+                    'Erro ao atualizar a senha',
+                    [{ text: 'Ok' }],
+                    { cancelable: false }
+                );
             }
         } catch (error) {
-            console.log(error);
+            console.log('Erro atualizando senha:', error);
+            Alert.alert(
+                'Erro',
+                'Ocorreu um erro ao atualizar a senha.',
+                [{ text: 'Ok' }],
+                { cancelable: false }
+            );
         }
-    };
-
-    const generatePassword = () => {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let newPassword = "";
-        for (let i = 0; i < 8; i++) {
-            const randomNumber = Math.floor(Math.random() * chars.length);
-            newPassword += chars.charAt(randomNumber);
-        }
-        setPassword(newPassword);
-    };
+    }
 
     return (
-        <View style={styles.container}>
+        <View style={{ backgroundColor: 'white', marginBottom: 70, width: "80%" }}>
             <TextInput
-                placeholder="Login"
-                onChangeText={login => setLogin(login)}
+                placeholder="Id da senha"
+                onChangeText={id => setId(id)}
+                value={id}
                 style={styles.input}
             />
             <TextInput
-                placeholder="Nova Senha"
-                value={password}
-                editable={false}
+                placeholder="Nova senha"
+                onChangeText={senha => setSenha(senha)}
+                value={senha}
                 style={styles.input}
             />
-            <Button title="Gerar Nova Senha" onPress={generatePassword} />
-            <Button title="Salvar" disabled={login === '' || password === ''} onPress={update} />
+            <Button title="Atualizar senha" onPress={update} />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
-        marginTop: 70,
-        width: "80%"
-    },
     input: {
         height: 40,
         margin: 12,
